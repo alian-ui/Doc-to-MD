@@ -1,0 +1,32 @@
+{
+  "name": "doc-to-md",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.12",
+    "jest": "^30.0.4",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/turndown": "^5.0.5",
+    "@types/yargs": "^17.0.33",
+    "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
+    "p-limit": "^6.2.0",
+    "turndown": "^7.2.0",
+    "yargs": "^18.0.0"
+  }
+}

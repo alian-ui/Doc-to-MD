@@ -1,0 +1,28 @@
+# Dependencies
+/node_modules
+
+# Build output
+/dist
+
+# Logs
+npm-debug.log*
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# Local environment variables
+.env
+.env.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Test Results & Coverage
+/coverage
+
+# Tool output files
+*.md
+!README.md
+/images/
+/my-docs/
