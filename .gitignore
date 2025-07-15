@@ -1,28 +1,163 @@
-# Dependencies
-/node_modules
+# Doc-to-MD GitHub Repository .gitignore
 
-# Build output
-/dist
-
-# Logs
+# ========================================
+# Node.js Dependencies
+# ========================================
+node_modules/
 npm-debug.log*
-*.log
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
 
-# Local environment variables
+# ========================================
+# Build Output & Distribution
+# ========================================
+dist/
+build/
+lib/
+out/
+*.tsbuildinfo
+
+# ========================================
+# TypeScript Compilation
+# ========================================
+*.js.map
+*.d.ts.map
+
+# ========================================
+# Environment & Configuration
+# ========================================
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.npmrc
 
-# OS generated files
+# ========================================
+# IDE & Editor Files
+# ========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ========================================
+# OS Generated Files
+# ========================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# Test Results & Coverage
-/coverage
+# ========================================
+# Testing & Coverage
+# ========================================
+coverage/
+.nyc_output/
+*.lcov
+test-results/
+test-output/
 
-# Tool output files
-*.md
+# ========================================
+# Temporary Files & Cache
+# ========================================
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+
+# ========================================
+# Logs & Debug Files
+# ========================================
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ========================================
+# Runtime & Process Files
+# ========================================
+.grunt/
+.lock-wscript
+.wafpickle-N
+.node_repl_history
+.pm2/
+
+# ========================================
+# Tool Output Files & Generated Content
+# ========================================
+# Allow documentation files
 !README.md
+!DOCUMENTATION.md
+!LICENSE.md
+!CHANGELOG.md
+!CONTRIBUTING.md
+!RELEASE-NOTES.md
+!100-percent-detection-guide.md
+!success-rate-analysis.md
+!troubleshooting-guide.md
+!web-diversity-analysis.md
+!enhanced-confidence-analysis.md
+!test-sites-plan.md
+
+# Exclude generated output files
+unified-output.md
+crawl-output.md
+output-*.md
+analysis-report-*.md
+
+# Crawler output directories
+/output/
 /images/
+/downloads/
 /my-docs/
+/crawled-docs/
+/extracted-content/
+
+# Configuration files (allow examples)
+config.json
+user-config.json
+local-config.json
+!example-config.json
+
+# ========================================
+# Package Manager Files
+# ========================================
+.yarn/
+.pnp.*
+.yarn-integrity
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ========================================
+# Optional: Development & Analysis Tools
+# ========================================
+.eslintcache
+.stylelintcache
+.prettierignore.bak
+analysis-report-*.md
+
+# ========================================
+# Security & Sensitive Data
+# ========================================
+.secrets/
+secrets.json
+auth-config.json
+
+# ========================================
+# Docker & Container Files
+# ========================================
+Dockerfile.local
+docker-compose.override.yml
+.dockerignore.local

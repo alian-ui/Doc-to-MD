@@ -1,27 +1,17 @@
 
 
-import axios from 'axios';
-import * as cheerio from 'cheerio';
-import TurndownService from 'turndown';
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { URL } from 'url';
 import pLimit from 'p-limit';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
-const turndownService = new TurndownService({ headingStyle: 'atx' });
-
-// --- Types ---
-type PageResult = {
-  url: string;
-  markdown: string;
-  status: 'success';
-} | {
-  url: string;
-  error: string;
-  status: 'error';
-};
+// Import core functionality
+import { 
+  getNavigationLinks, 
+  fetchAndConvertPage, 
+  PageResult 
+} from './core';
 
 // --- Argument Parsing ---
 async function parseArgs() {
@@ -38,93 +28,6 @@ async function parseArgs() {
     .help()
     .alias('help', 'h')
     .argv;
-}
-
-// --- Link Extraction ---
-async function getNavigationLinks(startUrl: string, navSelector: string): Promise<string[]> {
-  // ... (same as before)
-  try {
-    console.log(`Fetching navigation links from: ${startUrl}`);
-    const { data } = await axios.get(startUrl, { timeout: 10000 });
-    const $ = cheerio.load(data);
-    const baseUrl = new URL(startUrl);
-
-    const links: string[] = [];
-    $(navSelector).find('a').each((i, el) => {
-      const href = $(el).attr('href');
-      if (href) {
-        try {
-          const absoluteUrl = new URL(href, baseUrl.href).href;
-          if (!links.includes(absoluteUrl)) {
-            links.push(absoluteUrl);
-          }
-        } catch (e) {
-          console.warn(`Skipping invalid link: ${href}`);
-        }
-      }
-    });
-    console.log(`Found ${links.length} unique links.`);
-    return links;
-  } catch (error) {
-    console.error(`Error fetching navigation links: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    return [];
-  }
-}
-
-// --- Image Handling ---
-async function downloadImage(imgUrl: string, imagesDir: string): Promise<string | null> {
-  try {
-    const url = new URL(imgUrl);
-    const imageName = path.basename(url.pathname);
-    const localPath = path.join(imagesDir, imageName);
-    
-    const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
-    await fs.writeFile(localPath, response.data);
-    
-    // Return relative path for markdown
-    return path.join('images', imageName);
-  } catch (error) {
-    console.warn(`Failed to download image: ${imgUrl} - ${error instanceof Error ? error.message : 'Unknown error'}`);
-    return null;
-  }
-}
-
-// --- Content Fetching and Conversion ---
-async function fetchAndConvertPage(url: string, contentSelector: string, downloadImages: boolean, imagesDir: string): Promise<PageResult> {
-  try {
-    console.log(`Processing page: ${url}`);
-    const { data } = await axios.get(url, { timeout: 15000 });
-    const $ = cheerio.load(data);
-
-    const contentElement = $(contentSelector);
-
-    if (downloadImages) {
-      const imagePromises: Promise<void>[] = [];
-      contentElement.find('img').each((i, el) => {
-        const img = $(el);
-        const src = img.attr('src');
-        if (src) {
-          const absoluteSrc = new URL(src, url).href;
-          const promise = downloadImage(absoluteSrc, imagesDir).then(localPath => {
-            if (localPath) {
-              img.attr('src', localPath);
-            }
-          });
-          imagePromises.push(promise);
-        }
-      });
-      await Promise.all(imagePromises);
-    }
-
-    const contentHtml = contentElement.html();
-    if (contentHtml) {
-      const markdown = turndownService.turndown(contentHtml);
-      return { url, markdown, status: 'success' };
-    }
-    return { url, status: 'error', error: `Content not found using selector "${contentSelector}"` };
-  } catch (error) {
-    return { url, status: 'error', error: error instanceof Error ? error.message : 'Unknown error' };
-  }
 }
 
 // --- Main Execution ---

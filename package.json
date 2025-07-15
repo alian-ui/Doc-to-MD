@@ -1,14 +1,45 @@
 {
   "name": "doc-to-md",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Advanced website documentation crawler with intelligent optimization and automatic crawler selection",
+  "main": "dist/index.js",
+  "bin": {
+    "doc-to-md": "./bin/doc-to-md.js",
+    "doc-to-md-unified": "./bin/unified.js",
+    "doc-to-md-format": "./bin/format.js",
+    "doc-to-md-performance": "./bin/performance.js",
+    "doc-to-md-configurable": "./bin/configurable.js",
+    "doc-to-md-enhanced": "./bin/enhanced.js"
+  },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "test": "jest"
+    "start-enhanced": "ts-node src/enhanced-index.ts",
+    "start-configurable": "ts-node src/configurable-index.ts",
+    "start-performance": "ts-node src/performance-index.ts",
+    "start-format": "ts-node src/format-index.ts",
+    "start-unified": "ts-node src/unified-index.ts",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "test-config": "jest src/config.test.ts",
+    "test-configurable": "jest src/configurable-core.test.ts",
+    "test-performance": "jest src/performance-core.test.ts",
+    "test-format": "jest src/format-core.test.ts",
+    "test-unified": "jest src/unified-core.test.ts"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "documentation",
+    "crawler",
+    "markdown",
+    "website-scraper",
+    "html-to-markdown",
+    "docs-converter",
+    "web-crawler",
+    "documentation-tool",
+    "intelligent-crawler",
+    "typescript"
+  ],
+  "author": "Advanced Doc-to-MD Team",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
@@ -25,7 +56,7 @@
     "@types/yargs": "^17.0.33",
     "axios": "^1.10.0",
     "cheerio": "^1.1.0",
-    "p-limit": "^6.2.0",
+    "p-limit": "^3.1.0",
     "turndown": "^7.2.0",
     "yargs": "^18.0.0"
   }

@@ -1,0 +1,79 @@
+{
+  "crawl": {
+    "timeout": 20000,
+    "userAgent": "Doc-to-MD/2.0.0 Advanced (Documentation Scraper)",
+    "retry": {
+      "maxRetries": 5,
+      "baseDelay": 2000,
+      "maxDelay": 30000,
+      "retryOnStatus": [408, 429, 500, 502, 503, 504]
+    },
+    "validateUrls": true,
+    "proxy": {
+      "enabled": false,
+      "protocol": "http"
+    },
+    "rateLimit": {
+      "enabled": true,
+      "requestsPerSecond": 3,
+      "burstSize": 10,
+      "respectRobotsTxt": true
+    },
+    "customHeaders": {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "Accept-Language": "en-US,en;q=0.5",
+      "Cache-Control": "no-cache"
+    },
+    "followRedirects": true,
+    "maxRedirects": 10,
+    "sslConfig": {
+      "rejectUnauthorized": true,
+      "allowSelfSigned": false
+    },
+    "cookies": {
+      "enabled": false
+    }
+  },
+  "output": {
+    "format": "markdown",
+    "includeMetadata": true,
+    "includeToc": true,
+    "tocMaxDepth": 4,
+    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+    "preserveOriginalImages": false,
+    "imageFormats": ["jpg", "jpeg", "png", "gif", "webp", "svg"],
+    "maxImageSize": 20
+  },
+  "selectors": {
+    "navigation": ".navigation, .nav, .sidebar nav, [role=\"navigation\"], .toc",
+    "content": "main, .main, .content, .main-content, article, [role=\"main\"], .documentation",
+    "excludeSelectors": [
+      ".advertisement",
+      ".ads",
+      ".sidebar-ads",
+      ".footer",
+      ".header",
+      ".navigation",
+      ".breadcrumbs",
+      ".pagination",
+      ".comments",
+      ".related-posts",
+      ".social-sharing",
+      ".cookie-notice",
+      ".feedback",
+      "script",
+      "style"
+    ],
+    "includeSelectors": [],
+    "titleSelector": "h1, .page-title, .article-title, title",
+    "authorSelector": ".author, .byline, [rel=\"author\"]",
+    "dateSelector": "time, .date, .published, .post-date"
+  },
+  "concurrency": 8,
+  "downloadImages": true,
+  "outputDir": "./docs",
+  "outputFile": "documentation.md",
+  "continueOnError": true,
+  "verbose": true,
+  "dryRun": false
+}
