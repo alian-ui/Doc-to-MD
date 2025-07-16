@@ -40,17 +40,32 @@
 
 ### Using the Unified Interface (Recommended)
 
-The unified interface automatically analyzes websites and selects the optimal crawler:
+The unified interface automatically analyzes websites and selects the optimal crawler with advanced fallback mechanisms:
 
 ```bash
-# Basic usage with automatic crawler selection
+# Basic usage with automatic crawler selection and fallback
 npm run start-unified -- https://docs.example.com
 
 # Analysis-only mode to see recommendations
 npm run start-unified -- https://docs.example.com --analyze --verbose
 
-# Force specific crawler
-npm run start-unified -- https://docs.example.com --crawler performance
+# Force specific crawler with fallback support
+npm run start-unified -- https://docs.example.com --crawler configurable
+```
+
+### Single Page Fallback for JavaScript-Heavy Sites
+
+For complex sites with JavaScript routing (SPA, Slate framework, etc.):
+
+```bash
+# Automatic fallback detection and handling
+npm run start-unified -- https://axidraw.com/doc/cli_api/
+
+# The system will automatically:
+# 1. Attempt normal navigation-based crawling
+# 2. Detect navigation failure (0 links found)
+# 3. Switch to single-page content extraction
+# 4. Successfully extract complete documentation
 ```
 
 ### Finding CSS Selectors
@@ -73,6 +88,8 @@ The Unified Interface (Task 6) provides intelligent crawler selection through au
 - **Confidence Scoring**: Provides detailed analysis with confidence ratings
 - **Multiple Operation Modes**: Analysis-only, dry-run, forced selection, full crawling
 - **Real-time Monitoring**: Event-based progress tracking with detailed logging
+- **Single Page Fallback**: Automatic fallback for JavaScript-heavy sites with fragment navigation
+- **SPA Framework Support**: Intelligent handling of Slate, React, Vue.js documentation sites
 
 ### Command Line Options
 

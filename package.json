@@ -1,7 +1,7 @@
 {
   "name": "doc-to-md",
-  "version": "2.0.0",
-  "description": "Advanced website documentation crawler with intelligent optimization and automatic crawler selection",
+  "version": "2.1.1",
+  "description": "Advanced website documentation crawler with intelligent optimization, automatic crawler selection, and single-page fallback for complex sites",
   "main": "dist/index.js",
   "bin": {
     "doc-to-md": "./bin/doc-to-md.js",
@@ -37,7 +37,12 @@
     "web-crawler",
     "documentation-tool",
     "intelligent-crawler",
-    "typescript"
+    "typescript",
+    "single-page-application",
+    "javascript-heavy-sites",
+    "slate-framework",
+    "bot-protection",
+    "fallback-mechanism"
   ],
   "author": "Advanced Doc-to-MD Team",
   "license": "ISC",

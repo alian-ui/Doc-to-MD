@@ -1,4 +1,4 @@
-# Doc-to-MD v2.1.0 - Release Summary
+# Doc-to-MD v2.1.1 - Release Summary
 
 ## 🚀 **Major Achievements**
 
@@ -87,4 +87,4 @@ node bin/interactive-optimizer.js https://difficult-site.com
 - ✅ **Community Framework**: Extensible patterns and user contribution support
 - ✅ **Transparent Metrics**: Honest limitations and realistic expectations
 
-**Doc-to-MD v2.1.0 represents a mature, production-ready documentation crawling system with real-world validation and transparent performance metrics.**
+**Doc-to-MD v2.1.1 represents a mature, production-ready documentation crawling system with real-world validation and transparent performance metrics.**

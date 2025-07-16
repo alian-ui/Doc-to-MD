@@ -433,3 +433,154 @@ echo "Success rate: $(wc -l < unified-output.md) lines generated"
 ```
 
 **結論**: この手順に従えば、**95%以上のドキュメントサイトで実用的な成功**を収められます！
+
+## 🚨 **実際のトラブルシューティング事例**
+
+### **事例: AxiDraw CLI API ドキュメント**
+```bash
+# URL: https://axidraw.com/doc/cli_api/
+# 問題: 70%信頼度、50ページ検出するも実行失敗
+
+# 症状の診断
+✅ 分析段階: 70% confidence, 50 pages detected
+✅ セレクター発見: .toc-wrapper, #toc, .content
+❌ 実行段階: 全クローラーで失敗
+```
+
+#### **原因分析と対策**
+
+**問題: Single Page Application (SPA)構造**
+```bash
+# 調査結果
+curl -s "https://axidraw.com/doc/cli_api/" | grep -i "toc\|nav"
+# → .toc-wrapper, #toc, .toc-link 発見
+
+# しかし実際のリンクはJavaScript生成
+# 静的HTMLには存在しない可能性
+```
+
+#### **段階的解決アプローチ**
+
+**ステップ1: 基本接続確認**
+```bash
+# サイトアクセス確認
+curl -I "https://axidraw.com/doc/cli_api/"
+# HTTP/1.1 200 OK → アクセス可能
+
+# robots.txt確認  
+curl "https://axidraw.com/robots.txt"
+# 特別な制限なし
+```
+
+**ステップ2: JavaScript依存度調査**
+```bash
+# HTMLソース確認
+curl -s "https://axidraw.com/doc/cli_api/" | grep -c "script"
+# 大量のJavaScriptが確認される
+
+# 静的コンテンツ確認
+curl -s "https://axidraw.com/doc/cli_api/" | grep -o "#[a-z-]*" | sort -u
+# フラグメントID発見: #introduction, #installation, etc.
+```
+
+**ステップ3: 代替アプローチ**
+```bash
+# 1. セクション別直接アクセス
+doc-to-md "https://axidraw.com/doc/cli_api/#introduction" --single-page
+doc-to-md "https://axidraw.com/doc/cli_api/#installation" --single-page
+
+# 2. より広範囲なリンク収集
+doc-to-md "https://axidraw.com/doc/cli_api/" --selector-nav "a[href]" --limit-pages 10
+
+# 3. 手動セクション抽出
+# ブラウザでページ全体をMarkdown変換
+```
+
+#### **この種のサイトの特徴と対策**
+
+**SPA/JavaScript重厚サイトの特徴**
+- ✅ 静的HTML解析: セレクター発見可能
+- ❌ 動的リンク生成: JavaScript必須
+- ❌ 非同期コンテンツ: 遅延ロード
+- ❌ Fragment routing: #ハッシュナビゲーション
+
+**推奨対策**
+```bash
+# 対策1: 将来実装予定のヘッドレスブラウザモード
+doc-to-md "URL" --browser-mode --wait-time 5000
+
+# 対策2: 単一ページモード
+doc-to-md "URL" --single-page --selector-content ".content"
+
+# 対策3: 手動セクション指定
+doc-to-md "URL#section1" --single-page
+doc-to-md "URL#section2" --single-page
+```
+
+**成功率期待値の調整**
+```
+サイトタイプ         既存期待値   修正後期待値
+──────────────────────────────────────────
+SPA/JavaScript重厚    60-80%   →   30-50%
+Fragment routing      70-85%   →   40-60%
+動的TOC生成           75-90%   →   50-70%
+```
+
+### **🔧 現実的な解決策: JavaScript重厚サイト対応**
+
+#### **即座に実行可能な方法**
+
+**方法1: ブラウザ経由での手動変換**
+```bash
+# ブラウザでページを開く
+open "https://axidraw.com/doc/cli_api/"
+
+# ページ全体を選択 (Cmd+A)
+# 右クリック → 検査 → Console
+# 以下のJavaScriptコードを実行:
+
+var content = document.querySelector('.content, main, article').outerHTML;
+var turndown = new TurndownService();
+console.log(turndown.turndown(content));
+
+# 結果をコピーしてファイルに保存
+```
+
+**方法2: ブラウザ拡張機能の活用**
+```bash
+# Chrome/Safari拡張機能:
+# - Web Clipper (Notion)
+# - MarkDownload
+# - SingleFile
+```
+
+**方法3: 将来の機能拡張**
+```typescript
+// 次期バージョンで実装予定
+interface HeadlessBrowserConfig {
+  waitTime: number;      // JavaScript読み込み待機時間
+  scrollToBottom: boolean; // 遅延ロードコンテンツ取得
+  interceptAjax: boolean;  // AJAX要求の監視
+}
+
+// 使用例
+doc-to-md "URL" --browser-mode --wait-time 5000 --scroll-bottom
+```
+
+#### **この事例から得られた教訓**
+
+**JavaScript重厚サイトの識別方法**
+```bash
+# 1. HTMLソース確認
+curl -s "URL" | grep -c "script"
+# 10個以上 → JavaScript重厚サイトの可能性
+
+# 2. フレームワーク検出
+curl -s "URL" | grep -i "react\|vue\|angular\|slate"
+# フレームワーク名発見 → SPA/JavaScript依存
+
+# 3. コンテンツ密度確認
+curl -s "URL" | wc -c  # HTMLサイズ
+curl -s "URL" | grep -o "<p>" | wc -l  # 実際のコンテンツ量
+# サイズ大、コンテンツ少 → JavaScript生成の可能性
+```

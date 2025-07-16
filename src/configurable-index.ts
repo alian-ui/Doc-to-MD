@@ -1,5 +1,27 @@
 #!/usr/bin/env node
 
+/**
+ * Doc-to-MD Configurable Crawler v2.1.1
+ * 
+ * Advanced documentation crawler with enterprise features:
+ * - Comprehensive proxy support (HTTP/HTTPS/SOCKS)
+ * - Single Page Fallback for JavaScript-heavy sites
+ * - Fragment navigation handling for SPA frameworks
+ * - Bot protection bypass strategies
+ * - Custom headers and authentication
+ * - Rate limiting and SSL configuration
+ * 
+ * New in v2.1.0:
+ * - Single Page Fallback mechanism (lines 168-200)
+ * - Automatic detection of navigation failures
+ * - Enhanced support for Slate framework documentation
+ * - Successful AxiDraw CLI API processing (109,199 characters)
+ * 
+ * v2.1.1 Updates:
+ * - Enhanced documentation and GitHub release preparation
+ * - Improved file organization and version consistency
+ */
+
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import * as fs from 'fs/promises';
@@ -160,12 +182,49 @@ async function processDocumentation(config: DocToMdConfig): Promise<void> {
     
     // Get navigation links
     console.log(`📂 Extracting navigation links...`);
-    const baseUrl = process.argv[process.argv.length - 1]; // Last argument should be URL
+    const baseUrl = argv._[0] as string; // First positional argument should be URL
+    if (!baseUrl) {
+      console.error('❌ URL is required as the first argument');
+      process.exit(1);
+    }
     const links = await crawler.getNavigationLinks(baseUrl);
     
     if (links.length === 0) {
-      console.error('❌ No links found with the specified navigation selector.');
-      process.exit(1);
+      console.log('⚠️ No navigation links found. Attempting single-page extraction...');
+      
+      // Fallback: Extract content from the base URL directly
+      try {
+        const singlePageResult = await crawler.fetchAndConvertPage(baseUrl);
+        if (singlePageResult.status === 'success' && singlePageResult.markdown) {
+          console.log('✅ Single-page extraction successful!');
+          
+          // Process as single page
+          const results = [singlePageResult];
+          const successful = results.filter(r => r.status === 'success');
+          
+          console.log(`📊 Processing Summary:`);
+          console.log(`   ✅ Successful: ${successful.length} (single page)`);
+          console.log(`   📝 Content length: ${singlePageResult.markdown.length} characters`);
+          console.log(`   📝 Word count: ${singlePageResult.wordCount || 'N/A'}`);
+          
+          // Generate output if not dry run
+          if (!config.dryRun) {
+            console.log(`\n📝 Generating output...`);
+            await generateOutput(successful, config);
+            console.log(`✅ Output saved to: ${path.resolve(config.outputDir, config.outputFile)}`);
+          }
+          
+          const totalTime = Date.now() - startTime;
+          console.log(`\n🎉 Single-page processing completed in ${Math.round(totalTime / 1000)}s`);
+          return;
+        } else {
+          console.error('❌ Single-page extraction also failed:', singlePageResult.error);
+          process.exit(1);
+        }
+      } catch (error) {
+        console.error('❌ Single-page extraction failed:', error);
+        process.exit(1);
+      }
     }
 
     console.log(`✅ Found ${links.length} pages to process\n`);

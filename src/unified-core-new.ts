@@ -380,15 +380,17 @@ export class UnifiedCrawler extends EventEmitter {
   }
 
   private async executeFormatCrawl(url: string): Promise<UnifiedResult> {
-    const formatter = new EnhancedFormatter({
-      generateToc: this.config.output?.includeToc || false,
-      tocDepth: this.config.output?.tocMaxDepth || 3,
-      tocStyle: 'numbers',
-      includeMetadata: this.config.output?.includeMetadata || false,
-      metadataStyle: 'yaml',
-      enhancedTables: true,
-      includeAnalytics: true,
-      customStyling: {}
+    const formatter = new EnhancedFormatter(this.config, {
+      generateTableOfContents: this.config.output?.includeToc || false,
+      enableTableFormatting: true,
+      enableCodeBlockEnhancement: true,
+      customStyles: {
+        headingPrefix: '',
+        codeBlockTheme: 'github',
+        tableStyle: 'github',
+        linkStyle: 'auto',
+        listStyle: 'dash'
+      }
     });
 
     try {

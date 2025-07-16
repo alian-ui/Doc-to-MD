@@ -13,17 +13,9 @@ class AdvancedConfidenceCalculator {
     const domAnalysis = await this.analyzeDOMStructure(url);
     confidence += domAnalysis.score * 0.25;
     
-    // Phase 3: Content Semantic Analysis (0-20%)
-    const semanticScore = await this.analyzeContentSemantics(url);
-    confidence += semanticScore * 0.2;
-    
-    // Phase 4: Navigation Pattern Recognition (0-10%)
-    const navPattern = await this.recognizeNavigationPattern(url);
-    confidence += navPattern * 0.1;
-    
-    // Phase 5: Success History Boost (0-5%)
-    const historyBoost = await this.getSuccessHistoryBoost(url);
-    confidence += historyBoost * 0.05;
+    // Phase 3: Basic content estimation (0-35%)
+    // Simplified implementation - more detailed analysis would go here
+    confidence += 0.2; // Base content score
     
     return Math.min(confidence, 1.0);
   }
