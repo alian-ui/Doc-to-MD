@@ -98,6 +98,18 @@ exports.SITE_OPTIMIZATIONS = [
         },
         recommendedCrawler: 'format',
         notes: 'Design-focused documentation with rich formatting'
+    },
+    {
+        name: 'Docsify Documentation',
+        patterns: [/marpit\.marp\.app/, /docsify\.js\.org/],
+        optimizations: {
+            navigationSelectors: ['#app', '.sidebar', '.sidebar-nav'],
+            contentSelectors: ['#app', '.content', '.markdown-section'],
+            excludeSelectors: ['.sidebar', '.sidebar-nav', '.app-nav'],
+            specialHandling: ['docsify-spa', 'markdown-direct']
+        },
+        recommendedCrawler: 'configurable',
+        notes: 'Docsify SPA framework - requires direct markdown file access'
     }
 ];
 /**

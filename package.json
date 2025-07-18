@@ -1,6 +1,6 @@
 {
   "name": "doc-to-md",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Advanced website documentation crawler with intelligent optimization, automatic crawler selection, and single-page fallback for complex sites",
   "main": "dist/index.js",
   "bin": {
@@ -25,7 +25,16 @@
     "test-configurable": "jest src/configurable-core.test.ts",
     "test-performance": "jest src/performance-core.test.ts",
     "test-format": "jest src/format-core.test.ts",
-    "test-unified": "jest src/unified-core.test.ts"
+    "test-unified": "jest src/unified-core.test.ts",
+    "dev": "node bin/doc-to-md.js",
+    "dev:unified": "node bin/unified.js",
+    "dev:configurable": "node bin/configurable.js",
+    "dev:performance": "node bin/performance.js",
+    "dev:format": "node bin/format.js",
+    "dev:enhanced": "node bin/enhanced.js",
+    "global:install": "npm install -g .",
+    "global:uninstall": "npm uninstall -g doc-to-md",
+    "global:update": "npm uninstall -g doc-to-md && npm install -g ."
   },
   "keywords": [
     "documentation",

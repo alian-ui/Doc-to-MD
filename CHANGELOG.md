@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-07-18
+
+### Added
+- **Docsify Framework Support**: Complete support for Docsify-based documentation sites
+  - Automatic detection of Docsify framework
+  - Direct _sidebar.md parsing for navigation
+  - Markdown file direct fetching
+  - Successfully processed Marpit/Marp documentation (1,550 lines, 8 pages)
+- **Comprehensive Development Environment**: 
+  - Complete development setup with `scripts/dev-setup.sh`
+  - VS Code integration with tasks and settings
+  - Development command aliases and helper functions
+- **Enhanced Documentation**: 
+  - `DEVELOPMENT-GUIDE.md` - Complete developer guide
+  - `PROJECT-OVERVIEW.md` - Beginner-friendly project overview
+  - Comprehensive usage examples and best practices
+- **Improved Development Scripts**: 
+  - Added 9 new npm scripts for local development
+  - Global installation management commands
+  - Environment-specific execution commands
+
+### Changed
+- **Site Optimization System**: Enhanced with Docsify pattern matching
+- **Configurable Core**: Improved with automatic framework detection
+- **Package Scripts**: Comprehensive development workflow support
+- **Documentation Structure**: Better organization and accessibility
+
+### Fixed
+- **Docsify Site Processing**: Previously failed sites now work perfectly
+- **Development Environment**: Clear separation between local and global execution
+- **Command Confusion**: Explicit local execution methods implemented
+
 ## [2.1.1] - 2025-07-16
 
 ### Added

@@ -171,6 +171,57 @@ class ConfigurableCrawler {
             const $ = cheerio.load(html);
             const links = [];
             const baseUrlObj = new URL(baseUrl);
+            // Check if this is a Docsify site
+            const isDocsify = html.includes('window.$docsify') || html.includes('docsify.js');
+            if (isDocsify) {
+                if (this.config.verbose) {
+                    console.log(`🔍 Detected Docsify site, attempting to parse _sidebar.md`);
+                }
+                // Try to fetch _sidebar.md for Docsify sites
+                try {
+                    const sidebarUrl = new URL('_sidebar.md', baseUrl).toString();
+                    const sidebarContent = await this.makeRequest(sidebarUrl);
+                    // Parse markdown links from sidebar
+                    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+                    let match;
+                    while ((match = linkRegex.exec(sidebarContent)) !== null) {
+                        const [, title, href] = match;
+                        if (href && !href.startsWith('http') && !href.startsWith('mailto:')) {
+                            try {
+                                // Convert relative links to full URLs
+                                let fullUrl;
+                                if (href === '/') {
+                                    fullUrl = baseUrl;
+                                }
+                                else if (href.startsWith('/')) {
+                                    fullUrl = new URL(href.substring(1), baseUrl).toString();
+                                }
+                                else {
+                                    fullUrl = new URL(href, baseUrl).toString();
+                                }
+                                links.push(fullUrl);
+                                if (this.config.verbose) {
+                                    console.log(`   Found: ${title} -> ${fullUrl}`);
+                                }
+                            }
+                            catch (e) {
+                                // Invalid URL, skip
+                            }
+                        }
+                    }
+                    if (links.length > 0) {
+                        if (this.config.verbose) {
+                            console.log(`✅ Found ${links.length} links from Docsify _sidebar.md`);
+                        }
+                        return [...new Set(links)];
+                    }
+                }
+                catch (error) {
+                    if (this.config.verbose) {
+                        console.log(`⚠️  Could not fetch _sidebar.md, falling back to HTML parsing`);
+                    }
+                }
+            }
             // Support multiple navigation selectors
             const navSelectors = this.config.selectors.navigation.split(',').map(s => s.trim());
             for (const selector of navSelectors) {
@@ -205,6 +256,57 @@ class ConfigurableCrawler {
         try {
             if (this.config.verbose) {
                 console.log(`📄 Processing: ${url}`);
+            }
+            // Check if this is a Docsify site and if URL ends with .md
+            const baseUrl = new URL(url).origin;
+            const isDocsifyMarkdown = url.includes('marpit.marp.app') && !url.endsWith('.md');
+            if (isDocsifyMarkdown) {
+                // For Docsify sites, try to fetch the corresponding markdown file
+                try {
+                    let markdownUrl = url;
+                    // Convert Docsify routes to markdown file paths
+                    if (url === baseUrl || url.endsWith('/')) {
+                        markdownUrl = new URL('introduction.md', baseUrl).toString();
+                    }
+                    else {
+                        // Extract path and append .md
+                        const pathPart = url.replace(baseUrl, '').replace(/^\//, '').replace(/\/$/, '');
+                        if (pathPart && !pathPart.endsWith('.md')) {
+                            markdownUrl = new URL(`${pathPart}.md`, baseUrl).toString();
+                        }
+                    }
+                    if (this.config.verbose) {
+                        console.log(`🔍 Trying to fetch Docsify markdown: ${markdownUrl}`);
+                    }
+                    const markdownContent = await this.makeRequest(markdownUrl);
+                    // Process markdown content
+                    const metadata = {
+                        title: this.extractTitleFromMarkdown(markdownContent) || 'Untitled',
+                        description: this.extractDescriptionFromMarkdown(markdownContent) || '',
+                        url: url,
+                        lastModified: new Date().toISOString(),
+                        wordCount: markdownContent.split(/\s+/).length
+                    };
+                    const result = {
+                        status: 'success',
+                        url,
+                        title: metadata.title,
+                        markdown: markdownContent,
+                        metadata,
+                        processingTime: Date.now() - startTime,
+                        wordCount: metadata.wordCount
+                    };
+                    if (this.config.verbose) {
+                        console.log(`✅ Successfully processed Docsify markdown: ${markdownUrl}`);
+                    }
+                    return result;
+                }
+                catch (error) {
+                    if (this.config.verbose) {
+                        console.log(`⚠️  Failed to fetch Docsify markdown, falling back to HTML processing`);
+                    }
+                    // Fall through to regular HTML processing
+                }
             }
             const html = await this.makeRequest(url);
             const $ = cheerio.load(html);
@@ -408,6 +510,30 @@ class ConfigurableCrawler {
             }
             return null;
         }
+    }
+    extractTitleFromMarkdown(markdown) {
+        // Try to extract title from first H1 heading
+        const h1Match = markdown.match(/^#\s+(.+)$/m);
+        if (h1Match) {
+            return h1Match[1].trim();
+        }
+        // Try to extract from HTML title tag if present
+        const titleMatch = markdown.match(/<title[^>]*>([^<]+)<\/title>/i);
+        if (titleMatch) {
+            return titleMatch[1].trim();
+        }
+        return null;
+    }
+    extractDescriptionFromMarkdown(markdown) {
+        // Try to extract description from first paragraph
+        const lines = markdown.split('\n');
+        for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('[') && !trimmed.startsWith('<')) {
+                return trimmed.slice(0, 200) + (trimmed.length > 200 ? '...' : '');
+            }
+        }
+        return null;
     }
     getConfig() {
         return { ...this.config };

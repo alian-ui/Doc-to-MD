@@ -1,5 +1,26 @@
 #!/usr/bin/env node
 "use strict";
+/**
+ * Doc-to-MD Configurable Crawler v2.1.1
+ *
+ * Advanced documentation crawler with enterprise features:
+ * - Comprehensive proxy support (HTTP/HTTPS/SOCKS)
+ * - Single Page Fallback for JavaScript-heavy sites
+ * - Fragment navigation handling for SPA frameworks
+ * - Bot protection bypass strategies
+ * - Custom headers and authentication
+ * - Rate limiting and SSL configuration
+ *
+ * New in v2.1.0:
+ * - Single Page Fallback mechanism (lines 168-200)
+ * - Automatic detection of navigation failures
+ * - Enhanced support for Slate framework documentation
+ * - Successful AxiDraw CLI API processing (109,199 characters)
+ *
+ * v2.1.1 Updates:
+ * - Enhanced documentation and GitHub release preparation
+ * - Improved file organization and version consistency
+ */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);

@@ -10,13 +10,23 @@ yarn-error.log*
 lerna-debug.log*
 
 # ========================================
-# Build Output & Distribution
+# Output Files & Development
 # ========================================
 dist/
 build/
 lib/
 out/
 *.tsbuildinfo
+
+# Development output files
+output*.md
+unified-output*.md
+temp-*.md
+*-output-*.md
+
+# Development logs
+dev-*.log
+debug-*.log
 
 # ========================================
 # TypeScript Compilation

@@ -45,8 +45,14 @@ npm link
 
 ### Basic Usage
 ```bash
-# Method 1: Using global command (recommended after npm link)
+# Method 1: Using npm scripts (recommended for development)
+npm run dev -- https://docs.example.com
+
+# Method 2: Using global command (after npm install -g .)
 doc-to-md https://docs.example.com
+
+# Method 3: Direct execution
+node bin/doc-to-md.js https://docs.example.com
 
 # Method 2: Using npm scripts
 npm run start-unified -- https://docs.example.com
@@ -188,23 +194,66 @@ npm run start-unified -- https://docs.example.com \
   --include-toc --include-metadata --verbose
 ```
 
-## 🤝 Contributing
+## 👩‍💻 For Developers
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests: `npm test`
-5. Submit a pull request
+### Development Environment Setup
+```bash
+# 1. Clone and install dependencies
+git clone https://github.com/alian-ui/Doc-to-MD.git
+cd Doc-to-MD
+npm install
 
-## 📄 License
+# 2. Set up development environment
+source scripts/dev-setup.sh
 
-This project is licensed under the ISC License.
+# 3. Start developing
+npm run dev -- https://example.com --verbose
+```
 
-## 🔗 Links
+### Development Commands
+```bash
+# TypeScript development
+npm run start-unified -- https://example.com
 
-- **[Complete Documentation](./DOCUMENTATION.md)** - Detailed usage guide
-- **[GitHub Repository](https://github.com/alian-ui/Doc-to-MD)** - Source code
-- **[Issues](https://github.com/alian-ui/Doc-to-MD/issues)** - Bug reports and feature requests
+# JavaScript development (after build)
+npm run dev -- https://example.com --verbose
+npm run dev:unified -- https://example.com --analyze
+npm run dev:configurable -- https://example.com --dry
+
+# Testing
+npm test
+npm run test-unified
+
+# Build
+npm run build
+```
+
+### Quick Development Examples
+```bash
+# Analysis only
+npm run dev -- https://vue.js.org/ --analyze --verbose
+
+# Dry run (no files created)
+npm run dev -- https://react.dev/ --dry --verbose
+
+# Test with known good sites
+npm run dev -- https://marpit.marp.app/ --verbose
+npm run dev -- https://docs.docker.com/ --verbose
+```
+
+### Development Environment Management
+```bash
+# Global install for testing
+npm run global:install
+
+# Global uninstall
+npm run global:uninstall
+
+# Update global version
+npm run global:update
+```
+
+📖 **Full Development Guide**: See [DEVELOPMENT-GUIDE.md](./DEVELOPMENT-GUIDE.md) for comprehensive development instructions.
 
 ---
 
